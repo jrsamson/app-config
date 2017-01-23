@@ -10,3 +10,9 @@ logging:
    level:
      io:
        pivotal: DEBUG
+
+
+greeting:
+    displayFortune: false
+
+quoteService: http://quote-service-dev.cfapps.io/quote
