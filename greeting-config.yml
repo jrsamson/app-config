@@ -13,6 +13,6 @@ logging:
 
 
 greeting:
-    displayFortune: false
+    displayFortune: true
 
 quoteService: http://quote-service-dev.cfapps.io/quote
