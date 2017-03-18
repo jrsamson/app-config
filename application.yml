@@ -13,3 +13,7 @@ logging:
       pivotal: DEBUG
 
 
+spring: 
+  cloud:
+    services:
+      registrationMethod: direct
