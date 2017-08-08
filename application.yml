@@ -20,6 +20,6 @@ spring:
 
 endpoints:
     shutdown:
-        sensitive :false
-        enabled:true
+        sensitive: false
+        enabled: true
 
