@@ -13,13 +13,3 @@ logging:
       pivotal: DEBUG
 
 
-spring: 
-  cloud:
-    services:
-      registrationMethod: direct
-
-endpoints:
-    shutdown:
-        sensitive: false
-        enabled: true
-
