@@ -1,0 +1,19 @@
+my:
+  message: "bar-on-profile"
+---
+spring:
+  config:
+    activate:
+      on-profile: "dev"
+
+my:
+  message: "bar-dev-on-profile"
+---
+spring:
+  config:
+    activate:
+      on-profile: "prod"
+
+my:
+  message: "bar-prod-on-profile"
+
