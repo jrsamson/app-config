@@ -1,5 +1,5 @@
 my:
-  message: "bar-on-profile"
+  message: "bar-on-profile-UAT"
 ---
 spring:
   config:
@@ -7,7 +7,7 @@ spring:
       on-profile: "dev"
 
 my:
-  message: "bar-dev-on-profile"
+  message: "bar-dev-on-profile-UAT"
 ---
 spring:
   config:
@@ -15,5 +15,5 @@ spring:
       on-profile: "prod"
 
 my:
-  message: "bar-prod-on-profile"
+  message: "bar-prod-on-profile-UAT"
 
