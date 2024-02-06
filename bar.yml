@@ -142,7 +142,7 @@ detect-anomaly-config:
   detectAnomalyUrl: https://app-instance-anomaly-detect-api-uat.app.dev3.phx.pcf.syfbank.com/anomaly-detect
   timeoutInterval: 100
 my:
-  message: "bar-dev-on-profile-UAT"
+  message: "bar-dev-on-profile-UAT-one"
 ---
 spring:
   config:
