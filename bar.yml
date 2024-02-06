@@ -7,7 +7,7 @@ spring:
       on-profile: "dev"
 
 my:
-  message: "bar-dev-on-profile-UAT"
+  message: "bar-dev-on-profile-UAT-test"
 ---
 spring:
   config:
