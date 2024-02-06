@@ -170,6 +170,3 @@ detect-anomaly-config:
 
 
 
-my:
-  message: "bar-on-profile-UAT"
-
