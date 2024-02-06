@@ -1,0 +1,172 @@
+my:
+  message: "bar-on-profile-UAT"
+
+healthmonitoring-config:
+  cassandra:
+    local:
+      min-connection: 4
+      max-connection: 10
+      max-concurrent-connection: 1024
+    remote:
+      min-connection: 2
+      max-connection: 10
+      max-concurrent-connection: 256
+    heart-beat-interval: 60
+    idle-connection-timeout: 10
+    connection-pool-timeout: 10
+    new-connection-threshold: 1
+    contactpoints: "vqldsecasdbda01.prvcld.syfbank.com,vqldsecasdbda02.prvcld.syfbank.com,vqldsecasdbda03.prvcld.syfbank.com,vqldsecasdbda04.prvcld.syfbank.com,vqldsecasdbda05.prvcld.syfbank.com,vqldsecasdbda06.prvcld.syfbank.com"
+    port: 9042
+    session-threshold: 8
+    query-option: LOCAL_QUORUM
+    local-data-center: DAL
+    trustLocation: "classpath:client2dse-truststore-qa.jks"
+    auth-user: SVC-Health-Mon-NP
+    #Database configuration
+  dbconfig:
+    primary: # DB - DAL
+      jdbc-url: "jdbc:mysql://vippcfeccdbdvda.prvcld.syfbank.com:3307/health-monitoring-nonprod?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&verifyServerCertificate=false&useSSL=true"
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      minimum-idle: 11
+      maximum-pool-size: 15
+      connection-timeout: 500
+      maxLifetime: 900000
+    secondary: # DB - PHX - URL hostname to fix for VIP
+      jdbc-url: "jdbc:mysql://vippcfeccdbdvph.prvcld.syfbank.com:3307/health-monitoring-nonprod?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&verifyServerCertificate=false&useSSL=true"
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      minimum-idle: 11
+      maximum-pool-size: 15
+      connection-timeout: 500
+      maxLifetime: 900000 
+---
+newrelic:
+  readTimeoutMillis: 10000
+  writeTimeoutMillis: 10000
+  connectTimeoutMillis: 1000
+  intrevalBufferTimeMillis: 120000
+  responseTimeoutMillis: 120000
+  noOfRetryAttempts: 1
+  proxyIp: 10.72.142.104
+  proxyPort: 80
+  appIntrevalBufferTimeMillis: 900000
+  timeoutInMillis: 10
+  newRelicUrl: https://api.newrelic.com/graphql
+  newRelicHome: https://one.newrelic.com/
+  newRelicEntity: https://one.newrelic.com/redirect/entity/
+  metric-query-1: |
+    {
+      actor {
+       account(id: "#ACC_ID#") {
+  metric-query-2: >
+    nrql(query: "SELECT 
+    average(apm.service.transaction.duration) * 1000 as responseTimeMetric, rate(count(apm.service.transaction.duration), 1 minute) as throughputMetric,
+    (count(apm.service.error.count) / count(apm.service.transaction.duration))*100 as errorRateMetric,
+    rate(sum(apm.service.cpu.usertime.utilization), 1 second)*100 as cpuUtilization,
+    (((average(apm.service.memory.heap.used) * rate(count(apm.service.instance.count), 1 minute))*1000*1000)
+    /
+    ((average(apm.service.memory.heap.max) * rate(count(apm.service.instance.count), 1 minute))*1000*1000))*100 as heapMemoryUsageMetric,
+    apdex(apm.service.apdex) as apdex 
+    FROM Metric WHERE (appName like '#APP_NAME#%' and host.displayName = '#LOCATION#')
+    FACET `host` 
+    LIMIT MAX SINCE #TRANSRATE# seconds AGO")
+  metric-query-3: |
+    {
+         results
+                    }
+                  }
+                }
+    }
+  app-metric-query-1: |
+    {
+      actor {
+       account(id: "#ACC_ID#") {
+  app-metric-query-2: >
+    nrql(query: "SELECT 
+    average(apm.service.transaction.duration) * 1000 as responseTimeMetric,
+    rate(count(apm.service.transaction.duration), 1 minute) as throughputMetric,
+    (count(apm.service.error.count) / count(apm.service.transaction.duration))*100 as errorRateMetric,
+    rate(sum(apm.service.cpu.usertime.utilization), 1 second)*100 as cpuUtilization,
+    (((average(apm.service.memory.heap.used) * rate(count(apm.service.instance.count), 1 minute))*1000*1000) 
+    / ((average(apm.service.memory.heap.max) * rate(count(apm.service.instance.count), 1 minute))*1000*1000))*100 as heapMemoryUsageMetric,
+    apdex(apm.service.apdex) as apdex 
+    FROM Metric WHERE (appName like '#APP_NAME#%' and host.displayName = '#LOCATION#')
+    LIMIT MAX SINCE 1800 seconds AGO")
+  app-metric-query-3: |
+    {
+         results
+                    }
+                  }
+                }
+    }
+---
+log-encrypt-config: 
+  app-name : CloudNative/Health-Monitoring/app-instance-metrics-api-np
+  profile : nonProd
+---
+actuator-security:
+  user:
+    roles: ACTUATOR
+  protected_actuator_endpoints: "/actuator/refresh,/actuator/heapdump"
+---  
+management:
+  endpoints:
+    web:
+      exposure:
+        include: info,refresh,health,heapdump
+--- 
+springdoc:
+  swagger-ui:
+    doc-expansion: none
+---
+cfconfig:
+  username: SVC-APP_PILOT
+  logStreamingDuration: 60
+  transactionDuration: 300
+  logLimit: 1000
+spring:
+  cache:
+    type: redis
+---
+apm:
+  foundationsApis:
+    UAT-DEV2-DAL: api.sys.dev2.dal.pcf.syfbank.com
+    UAT-DEV2-PHX: api.sys.dev2.phx.pcf.syfbank.com
+    UAT-DEV3-DAL: api.sys.dev3.dal.pcf.syfbank.com
+    UAT-DEV3-PHX: api.sys.dev3.phx.pcf.syfbank.com
+---
+spring:
+  config:
+    activate:
+      on-profile: dev ##uat3-phx    
+detect-anomaly-config:
+  detectAnomalyUrl: https://app-instance-anomaly-detect-api-uat.app.dev3.phx.pcf.syfbank.com/anomaly-detect
+  timeoutInterval: 100
+my:
+  message: "bar-dev-on-profile-UAT-one"
+---
+spring:
+  config:
+    activate:
+      on-profile: uat2-phx  
+detect-anomaly-config:
+  detectAnomalyUrl: https://app-instance-anomaly-detect-api-uat.app.dev2.phx.pcf.syfbank.com/anomaly-detect
+  timeoutInterval: 100
+---
+spring:
+  config:
+    activate:
+      on-profile: uat2-dal    
+detect-anomaly-config:
+  detectAnomalyUrl: https://app-instance-anomaly-detect-api-uat.app.dev2.dal.pcf.syfbank.com/anomaly-detect
+  timeoutInterval: 100
+---
+spring: 
+  config:
+    activate:
+      on-profile: uat3-dal   
+detect-anomaly-config:
+  detectAnomalyUrl: https://app-instance-anomaly-detect-api-uat.app.dev3.dal.pcf.syfbank.com/anomaly-detect
+  timeoutInterval: 100   
+
+
+
