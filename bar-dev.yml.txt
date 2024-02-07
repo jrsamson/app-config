@@ -4,6 +4,14 @@ my:
 spring:
   config:
     activate:
+      on-profile: "dev"
+
+my:
+  message: "bar-dev-on-profile-UAT-test-dev"
+---
+spring:
+  config:
+    activate:
       on-profile: "prod"
 
 my:
