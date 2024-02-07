@@ -1,0 +1,18 @@
+my:
+  message: "bar-on-profile-UAT-dev"
+---
+spring:
+  config:
+    activate:
+      on-profile: "dev"
+
+my:
+  message: "bar-dev-on-profile-UAT-test-dev"
+---
+spring:
+  config:
+    activate:
+      on-profile: "prod"
+
+my:
+  message: "bar-prod-on-profile-UAT-dev"
