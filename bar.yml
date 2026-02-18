@@ -15,5 +15,5 @@ spring:
       on-profile: "prod"
 
 my:
-  message: "bar-prod-on-profile-test"
+  message: "bar-prod-on-profile-test-test"
 
